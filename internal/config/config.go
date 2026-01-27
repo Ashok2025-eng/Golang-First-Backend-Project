@@ -24,7 +24,7 @@ func MustLoad() *Config {
 	var configPath string
 
 	// Step 1: Check ENV variable
-	configPath = os.Getenv("CONFIG_PATH")
+	configPath = os.Getenv("CONFIG_PATH") //check enc variable
 
 	// Step 2: If ENV not set, check CLI flag
 	if configPath == "" {
@@ -38,14 +38,14 @@ func MustLoad() *Config {
 	}
 
 	// Step 3: Check if file exists
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	if _, err := os.Stat(configPath); os.IsNotExist(err) { // make sure the file actually exists if not prints an erro
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
 
 	// Step 4: Read config into struct
 	var cfg Config
 	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil { // force YAML
-		log.Fatalf("cannot read config file: %v", err)
+		log.Fatalf("cannot read config file: %v", err) // stops the program immediately
 	}
 
 	// ✅ Print which config file is being loaded (optional)

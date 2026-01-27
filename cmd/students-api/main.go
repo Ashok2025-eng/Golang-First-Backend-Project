@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Ashok2025-eng/students-api/internal/config"
+	"github.com/Ashok2025-eng/students-api/internal/http/handlers/student"
 )
 
 func main() {
@@ -18,12 +19,12 @@ func main() {
 	cfg := config.MustLoad()
 
 	// Setup router
-	router := http.NewServeMux()
-	router.HandleFunc("Get/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to students-api"))
-	})
+	router := http.NewServeMux() // creates a router(like a traffic controller)
+
+	router.HandleFunc("/api/students", student.New()) //- “Whenever someone visits /api/students, run the student.New() handler.”
 
 	// Setup server
+	//creates the actual hhtp server
 	server := http.Server{
 		Addr:    cfg.HTTPServer.Addr,
 		Handler: router,
@@ -32,11 +33,13 @@ func main() {
 	slog.Info("Server started ", slog.String("address", cfg.HTTPServer.Addr))
 	// ✅ Print server started message
 	// fmt.Printf("Server started at http://%s\n", cfg.HTTPServer.Addr)
-	done := make(chan os.Signal, 1)
+	done := make(chan os.Signal, 1) // handles shutdown signaals
 
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	//Strt server in Background
 	go func() {
-		err := server.ListenAndServe()
+		err := server.ListenAndServe() //makes the server start listening for requests.
 		if err != nil {
 			log.Fatal("failed to start server:", err)
 		}
@@ -44,6 +47,8 @@ func main() {
 	<-done
 
 	slog.Info("sutting down the server")
+
+	//gracefull shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
