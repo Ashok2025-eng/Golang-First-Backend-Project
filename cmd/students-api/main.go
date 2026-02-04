@@ -29,6 +29,7 @@ func main() {
 	router := http.NewServeMux() // creates a router(like a traffic controller)
 
 	router.HandleFunc("/api/students", student.New(storage)) //- “Whenever someone visits /api/students, run the student.New() handler.”
+	router.HandleFunc("/api/students/{id}", student.GetById(storage))
 
 	// Setup server
 	//creates the actual hhtp server
