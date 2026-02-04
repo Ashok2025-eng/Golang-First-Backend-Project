@@ -30,6 +30,7 @@ func main() {
 
 	router.HandleFunc("/api/students", student.New(storage)) //- “Whenever someone visits /api/students, run the student.New() handler.”
 	router.HandleFunc("/api/students/{id}", student.GetById(storage))
+	router.HandleFunc("GET /api/students", student.GetList(storage))
 
 	// Setup server
 	//creates the actual hhtp server
