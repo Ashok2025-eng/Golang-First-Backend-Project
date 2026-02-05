@@ -97,3 +97,32 @@ func (s *Sqlite) GetStudents() ([]types.Student, error) {
 
 	return students, nil
 }
+
+// func (s *Sqlite) UpdateStudents(student types.Student) error {
+// 	stmt, err := s.Db.Prepare("UPDATE students SET name = ?, email = ?, age = ? WHERE id = ?")
+// 	if err != nil {
+// 		return fmt.Errorf("prepare update error: %w", err)
+// 	}
+// 	defer stmt.Close()
+
+// 	_, err = stmt.Exec(student.Name, student.Email, student.Age, student.Id)
+// 	if err != nil {
+// 		return fmt.Errorf("exec update error: %w", err)
+// 	}
+
+// 	return nil
+// }
+
+func (s *Sqlite) UpdateStudents(student types.Student) error {
+	stmt, err := s.Db.Prepare("Update students SET name=?, email=?, age=? WHERE id=?")
+	if err != nil {
+		return fmt.Errorf("Prepare update error: %w", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(student.Name, student.Email, student.Age, student.Id)
+	if err != nil {
+		return fmt.Errorf("exec update error: %w", err)
+	}
+	return nil
+}
